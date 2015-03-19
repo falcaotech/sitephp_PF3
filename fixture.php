@@ -40,8 +40,8 @@ for($x = 0; $x <= 9; $x++){
     $smt = $conn->prepare("INSERT INTO pagina (uri, nome, resumo, conteudo) VALUES (:uri, :nome, :resumo, :conteudo)");
     // Trata os parametros presentes no comando
     $smt->bindParam(":uri", $uri);
-    $smt->bindParam(":nome", $nome_pagina);
-    $smt->bindParam(":resumo", $resumo_conteudo);
+    $smt->bindParam(":nome", $nome);
+    $smt->bindParam(":resumo", $resumo);
     $smt->bindParam(":conteudo", $conteudo);
     
     // Excuta o comando

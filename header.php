@@ -1,3 +1,6 @@
+<?php
+    require_once 'conexao.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,14 +21,37 @@
 </head>
     <body>
         <div class="container">
+            <!--MENU PRINCIPAL-->
+            <!--<li><a href="/home">Home</a></li>
+            <li><a href="/empresa">Empresa</a></li>
+            <li><a href="/produtos">Produtos</a></li>
+            <li><a href="/servicos">Sertviços</a></li>
+            <li><a href="/contato">Contato</a></li>-->
+            
+                
+            <?php
+                $conn = conexao();
+                $q = (isset($_GET['q']) && !empty($_GET['q'])) ? $_GET['q'] : '';
+                $sql = "SELECT * FROM pagina WHERE (nome LIKE :q);";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindValue("q", '%'.$q.'%');
+                $stmt->execute();
+                $paginas = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            ?>
+
+            
             <ul id="menu">
-                <li><a href="/home">Home</a></li>
-                <li><a href="/empresa">Empresa</a></li>
-                <li><a href="/produtos">Produtos</a></li>
-                <li><a href="/servicos">Sertviços</a></li>
-                <li><a href="/contato">Contato</a></li>
+                <?php
+                    if (count($paginas)) {
+                        foreach ($paginas as $pagina) {
+
+                        echo '<li><a href="' . $pagina['uri'] . '">' . $pagina['nome'] . '</a></li>';
+                        }
+                    }
+                ?>
             </ul>
             
+            <!--FORMULÁRIO DE BUSCA POR PALAVRA CHAVE-->
             <form name="busca" action="/busca" mehod="get">
                 <input name="q" size="25" maxlength="100" type="text" />
                 <input name="submit" type="submit" value="Buscar"/>

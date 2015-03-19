@@ -1,8 +1,6 @@
-    <?php
-        require_once 'header.php';
-        require_once 'conexao.php';
-    ?>
-    
+<?php
+    require_once 'header.php';
+?>   
     <div class="span10 conteudo">
         <div class="row">
             <?php
@@ -37,10 +35,11 @@
                         
                         if (count($paginas)) {
                             foreach ($paginas as $pagina) {
-                                echo '<a href="' . $pagina['uri'] . '">' . $pagina['nome'] . ': ' . '</a><br>';
+                                echo '<a href="' . $pagina['uri'] . '">' . $pagina['nome'] . '</a><br>';
                             }
                        } else {
-                           echo "Não foram encontrados resultados com o termo pesquisado.";
+                           echo "Não foram encontrados resultados com o termo pesquisado."."<br/>";
+                           echo '<strong><a href="/home">Volte para a página principal</a></strong>';
                        }
                         
                     } else {
