@@ -54,7 +54,7 @@
                         // Se encontrou a página no banco de dados exibe, senão mostra a página de erro 404
                         if ($pagina) {
                             // Se encontrou a página
-                            require_once 'pagina.php';
+                            require_once $uri.'.php';
                         } else {
                             // Se NÃO estiver permitido, inclui o arquivo de permissão negada
                             require_once '404.php';

@@ -1,10 +1,8 @@
 <?php
 
 return array(
-    'db' => array(
-        'host'      => 'localhost',
-        'dbname'    => 'sitephp',
-        'user'      => 'root',
-        'password'  => '',
-    )
+    'host' => 'localhost',
+    'user' => 'root',
+    'pass' => '',
+    'name' => 'sitephp'
 );

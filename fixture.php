@@ -1,56 +1,38 @@
 <?php
 
-header('Content-Type: text/html; charset=utf-8');
+$config = include_once 'config.php';
 
-require_once "conexao.php";
+$dsn = "mysql:host={$config['host']};";
 
-echo "#### Executando a Fixture ####<br>";
+try {
+    $pdo = new \PDO($dsn, $config['user'], $config['pass'], array(
+        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+    ));
 
-$conn = conexao();
+    $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$config['name']}`");
+    $pdo->exec("USE `{$config['name']}`");
+    $pdo->exec('DROP TABLE IF EXISTS `pagina`');
+    $pdo->exec(
+        "CREATE TABLE `pagina` (     
+            id INT(11) NOT NULL AUTO_INCREMENT,
+            uri VARCHAR(255) NOT NULL,
+            nome VARCHAR(255) NOT NULL,
+            conteudo TEXT NOT NULL,
 
-echo "Removendo tabela<br>";
-$conn->query("DROP TABLE IF EXISTS pagina;");
-echo " - OK\n";
+            PRIMARY KEY(`id`)
+        ) Engine=InnoDB CHARSET=UTF8;"        
+    );
 
-echo "Criando a tabela";
-
-$conn->query("CREATE TABLE pagina (
-                id INT NOT NULL AUTO_INCREMENT,
-                uri VARCHAR(45) NOT NULL,
-                nome VARCHAR(45) NOT NULL,
-                resumo VARCHAR(45) NOT NULL,
-                conteudo VARCHAR(455) NOT NULL,
-                PRIMARY KEY (id))
-            ENGINE = InnoDB
-            DEFAULT CHARACTER SET = utf8
-            COLLATE = utf8_general_ci;");
-
-echo" - OK\n";
-
-echo "Inserindo dados";
-for($x = 0; $x <= 9; $x++){
-    
-    // Criando as variveis que sero inseridas
-    $uri = 'pagina';
-    $nome = "Pagina {$x}";
-    $resumo = 'Resumo da página.';
-    $conteudo = 'É um fato conhecido  de todos que um leitor se distrairá com o conteúdo de texto legível de uma página quando estiver examinando sua diagramação. A vantagem de usar Lorem Ipsum é que ele tem uma distribuição normal de letras, ao contrário de \"Conteúdo aqui, conteúdo aqui\", fazendo com que ele tenha uma aparência similar a de um texto legível. Muitos softwares de publicação e editores de páginas na internet agora usam Lorem Ipsum como texto-modelo padrão, e uma rápida busca por \'lorem ipsum\' mostra vários websites ainda em sua fase de construção. Várias versões novas surgiram ao longo dos anos, eventualmente por acidente, e às vezes de propósito (injetando humor, e coisas do gênero).';
-    
-    // Prepara o comando que ser executado no banco
-    $smt = $conn->prepare("INSERT INTO pagina (uri, nome, resumo, conteudo) VALUES (:uri, :nome, :resumo, :conteudo)");
-    // Trata os parametros presentes no comando
-    $smt->bindParam(":uri", $uri);
-    $smt->bindParam(":nome", $nome);
-    $smt->bindParam(":resumo", $resumo);
-    $smt->bindParam(":conteudo", $conteudo);
-    
-    // Excuta o comando
-    $smt->execute();
-    
-    // Exibe a ultima id inserida no banco de dados
-    echo $conn->lastInsertId();
-
-    echo " - OK\n";
-    echo "#### Concluído ####<br>";
+    $pdo->exec(
+        "INSERT INTO `pagina`(`uri`, `nome`, `conteudo`) VALUES"
+            ."('home','Home','Seja bem vindo à página inicial.'),"
+            ."('empresa','Empresa','Você está na página que fala sobre a empresa.'),"
+            ."('produtos','Produtos','Esta é a página referente aos produtos.'),"
+            ."('servicos','Serviços','Saiba um pouco sobre os serviços ofertados.'),"
+            ."('contato','Contato','Entre em contato conosco.')"
+    );
+} catch (\PDOException $ex) {
+    die("Error Loading Fixtures:\n" . $ex->getMessage() . "\n");
 }
-?>
+
+echo "Fixtures Loaded Successfully.\n";
